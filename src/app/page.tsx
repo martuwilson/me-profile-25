@@ -330,23 +330,17 @@ export default function Home() {
                   title: "Task Management App",
                   description: "Aplicación de gestión de tareas colaborativa con funcionalidades en tiempo real, drag & drop, y notificaciones push. Interfaz intuitiva y responsiva.",
                   technologies: ["React", "Socket.io", "Node.js", "MongoDB", "Material-UI"],
-                  links: [
-                    { type: "demo", url: "#" },
-                    { type: "github", url: "#" }
-                  ]
+                  links: []
                 },
                 {
                   title: "Weather Dashboard",
                   description: "Dashboard meteorológico con visualización de datos en tiempo real, pronósticos extendidos y mapas interactivos. Integración con múltiples APIs meteorológicas.",
                   technologies: ["Vue.js", "Chart.js", "OpenWeather API", "Sass", "PWA"],
-                  links: [
-                    { type: "demo", url: "#" },
-                    { type: "github", url: "#" }
-                  ]
+                  links: []
                 },
                 {
-                  title: "CRAFT - Confidential Project - IBM",
-                  description: "Proyecto confidencial desarrollado en IBM. Implementé mejoras de performance, seguridad y componentes reutilizables en una plataforma empresarial. Detalles bajo NDA.",
+                  title: "CRAFT - IBM",
+                  description: "Proyecto confidencial desarrollado en IBM. Colaboré en la creación desde cero (frontend y backend) de un sistema de gestión de datos global e implementé mejoras de performance, seguridad y componentes reutilizables para la creación de procesos empresariales en la plataforma.",
                   technologies: ["Node.js", "React", "NestJS", "PostgreSQL", "Docker"],
                   confidential: true,
                   links: []
@@ -357,23 +351,37 @@ export default function Home() {
                     <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-slate-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
                     <div className="z-10 sm:order-2 sm:col-span-6">
                       <h3>
-                        <a
-                          className="inline-flex items-baseline font-semibold leading-tight text-slate-200 hover:text-teal-300 focus-visible:text-teal-300 group/link text-base"
-                          href={index === 0 ? "https://github.com/martuwilson/frontendmentor-vite-todoapp" : "#"}
-                          target="_blank"
-                          rel="noreferrer noopener"
-                          aria-label={`${project.title} (opens in a new tab)`}
-                        >
-                          <span className="absolute -inset-x-4 -inset-y-2.5 hidden rounded md:-inset-x-6 md:-inset-y-4 lg:block"></span>
-                          <span>
-                            {project.title}
-                            <span className="inline-block">
-                              <svg className="inline-block h-4 w-4 shrink-0 transition-transform group-hover/link:translate-x-2 group-focus-visible/link:translate-x-2 motion-reduce:transition-none ml-1 translate-y-px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                              </svg>
+                        {project.links && project.links.length > 0 && project.links.some(link => link.url !== "#") ? (
+                          <a
+                            className="inline-flex items-baseline font-semibold leading-tight text-slate-200 hover:text-teal-300 focus-visible:text-teal-300 group/link text-base"
+                            href={project.links.find(link => link.type === 'github' && link.url !== "#")?.url || project.links.find(link => link.url !== "#")?.url}
+                            target="_blank"
+                            rel="noreferrer noopener"
+                            aria-label={`${project.title} (opens in a new tab)`}
+                          >
+                            <span className="absolute -inset-x-4 -inset-y-2.5 hidden rounded md:-inset-x-6 md:-inset-y-4 lg:block"></span>
+                            <span>
+                              {project.title}
+                              <span className="inline-block">
+                                <svg className="inline-block h-4 w-4 shrink-0 transition-transform group-hover/link:translate-x-2 group-focus-visible/link:translate-x-2 motion-reduce:transition-none ml-1 translate-y-px" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                              </span>
                             </span>
-                          </span>
-                        </a>
+                          </a>
+                        ) : (
+                          <div className="inline-flex items-baseline font-semibold leading-tight text-slate-200 text-base">
+                            <span className="absolute -inset-x-4 -inset-y-2.5 hidden rounded md:-inset-x-6 md:-inset-y-4 lg:block"></span>
+                            <span>
+                              {project.title}
+                              {project.confidential && (
+                                <span className="ml-2 text-xs text-slate-400 font-normal">
+                                  (Confidencial)
+                                </span>
+                              )}
+                            </span>
+                          </div>
+                        )}
                       </h3>
                       <p className="mt-2 text-sm leading-normal">{project.description}</p>
                       <ul className="mt-2 flex flex-wrap" aria-label="Technologies used">
@@ -392,7 +400,7 @@ export default function Home() {
                       width={200}
                       height={120}
                       className="rounded border-2 border-slate-200/10 transition group-hover:border-slate-200/30 sm:order-1 sm:col-span-2 sm:translate-y-1"
-                      src={`https://placehold.co/200x120/1e293b/64748b.jpg?text=Project+${index + 1}`}
+                      src={project.confidential ? '/ibm-logo.jpg' : `https://placehold.co/200x120/1e293b/64748b.jpg?text=Project+${index + 1}`}
                     />
                   </div>
                 </li>
