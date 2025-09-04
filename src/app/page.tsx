@@ -10,7 +10,7 @@ export default function Home() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['about', 'experience', 'projects'];
+      const sections = ['about', 'technologies', 'experience', 'projects'];
       const scrollPosition = window.scrollY + 100;
 
       for (const section of sections) {
@@ -69,6 +69,7 @@ export default function Home() {
             <ul className="mt-16 w-max">
               {[
                 { id: 'about', label: 'Sobre Mí' },
+                { id: 'technologies', label: 'Stack Tech' },
                 { id: 'experience', label: 'Experiencia' },
                 { id: 'projects', label: 'Proyectos' }
               ].map((item) => (
@@ -158,20 +159,66 @@ export default function Home() {
           </div>
           <div>
             <p className="mb-4 leading-relaxed">
-              En 2018 decidí explorar el mundo del desarrollo web y desde entonces me enamoré de crear soluciones digitales. 
-              Mi enfoque está en construir productos accesibles e inclusivos para la web.
+              Desde diciembre de 2021, trabajo como Full Stack Developer en IBM, donde he desarrollado y mantenido 
+              aplicaciones principales y microservicios escalables. A partir de 2025, también ofrezco servicios 
+              freelance, combinando mi experiencia corporativa con proyectos independientes.
             </p>
             <p className="mb-4 leading-relaxed">
-              Actualmente, estoy enfocado en crear experiencias excepcionales utilizando las últimas tecnologías como 
+              En IBM, he logrado optimizar tiempos de carga en un 35%, reducir errores manuales en un 60%, y disminuir 
+              vulnerabilidades críticas de 40 a 8. Me especializo en el ecosistema 
+              <span className="font-medium text-slate-200"> JavaScript/TypeScript</span>, con 
               <span className="font-medium text-slate-200"> React</span>, 
-              <span className="font-medium text-slate-200"> Next.js</span>, y 
-              <span className="font-medium text-slate-200"> TypeScript</span>. 
-              Me apasiona escribir código limpio y crear interfaces intuitivas que generen valor real.
+              <span className="font-medium text-slate-200"> Node.js</span>, y 
+              <span className="font-medium text-slate-200"> NestJS</span>.
             </p>
             <p className="leading-relaxed">
-              Cuando no estoy programando, me gusta explorar nuevas tecnologías, contribuir a proyectos open source 
-              y compartir conocimientos con la comunidad de desarrolladores.
+              Mi enfoque está en crear arquitecturas modernas, implementar mejores prácticas de seguridad con herramientas 
+              como OWASP ZAP, y desarrollar soluciones escalables que optimicen tanto la experiencia del usuario como 
+              la eficiencia del código.
             </p>
+          </div>
+        </section>
+
+        {/* Tech Stack Section */}
+        <section id="technologies" className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24">
+          <div className="sticky top-0 z-20 -mx-6 mb-4 w-screen bg-slate-900/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0">
+            <h2 className="text-sm font-bold uppercase tracking-widest text-slate-200 lg:sr-only">
+              Stack Tecnológico
+            </h2>
+          </div>
+          <div>
+            <p className="mb-6 leading-relaxed text-slate-400">
+              Tecnologías y herramientas que domino y utilizo regularmente en mis proyectos profesionales:
+            </p>
+            <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+              {[
+                { category: "Frontend", techs: ["JavaScript", "TypeScript", "React.js", "Vite"] },
+                { category: "Backend", techs: ["Node.js", "Express.js", "NestJS"] },
+                { category: "Database", techs: ["PostgreSQL", "MongoDB"] },
+                { category: "DevOps & Tools", techs: ["Docker", "Git", "GitHub", "CI/CD"] },
+                { category: "Testing & Security", techs: ["Swagger", "OWASP ZAP"] }
+              ].map((group, groupIndex) => (
+                <div key={groupIndex} className="spotlight-hover">
+                  <h3 className="mb-3 font-medium text-slate-200 text-sm uppercase tracking-wide">
+                    {group.category}
+                  </h3>
+                  <ul className="space-y-2">
+                    {group.techs.map((tech, techIndex) => (
+                      <li key={techIndex} className="flex items-center text-sm text-slate-300">
+                        <span className="mr-2 h-1 w-1 bg-teal-400 rounded-full"></span>
+                        {tech}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 p-4 bg-slate-800/30 rounded-lg border border-slate-700/50">
+              <p className="text-sm text-slate-400 leading-relaxed">
+                <span className="font-medium text-teal-300">Especialización:</span> Desarrollo Full Stack con JavaScript/TypeScript, 
+                arquitecturas modernas, mejores prácticas de seguridad, y optimización de performance.
+              </p>
+            </div>
           </div>
         </section>
 
@@ -186,25 +233,25 @@ export default function Home() {
             <ol className="group/list">
               {[
                 {
-                  period: "2023 — PRESENTE",
-                  role: "Senior Full Stack Developer",
-                  company: "Tech Company",
-                  description: "Desarrollo y mantenimiento de aplicaciones web modernas utilizando React, Next.js y Node.js. Liderazgo técnico en proyectos de alta complejidad.",
-                  technologies: ["JavaScript", "TypeScript", "React", "Next.js", "Node.js", "PostgreSQL"]
+                  period: "2025 — PRESENTE",
+                  role: "Full Stack Developer Freelance",
+                  company: "Independiente",
+                  description: "Desarrollo de soluciones web completas para clientes diversos. Creación de aplicaciones escalables con arquitecturas modernas, desde la conceptualización hasta el deployment. Especialización en stack JavaScript/TypeScript con enfoque en performance y mejores prácticas de desarrollo.",
+                  technologies: ["TypeScript", "React.js", "Next.js", "Node.js", "NestJS", "PostgreSQL", "Docker", "CI/CD"]
                 },
                 {
-                  period: "2021 — 2023",
+                  period: "DIC 2021 — PRESENTE",
                   role: "Full Stack Developer",
-                  company: "Digital Agency",
-                  description: "Creación de sitios web y aplicaciones para clientes diversos. Implementación de soluciones escalables y optimización de rendimiento.",
-                  technologies: ["React", "Vue.js", "PHP", "MySQL", "AWS"]
+                  company: "IBM",
+                  description: "Desarrollo y mantenimiento de aplicaciones principales y microservicios con Node.js, Express y React. Optimización de rendimiento logrando 35% de mejora en tiempos de carga. Implementación de validaciones automáticas y middlewares de seguridad, reduciendo errores manuales en 60% y vulnerabilidades críticas de 40 a 8. Diseño de librería con 20+ componentes React reutilizables. Migración a arquitecturas modernas con Vite y NestJS.",
+                  technologies: ["Node.js", "Express", "React", "NestJS", "Vite", "IBM Watson", "OWASP ZAP", "SonarQube", "REST APIs", "CI/CD"]
                 },
                 {
-                  period: "2019 — 2021",
-                  role: "Frontend Developer",
-                  company: "Startup",
-                  description: "Desarrollo de interfaces de usuario responsivas y accesibles. Colaboración cercana con diseñadores UX/UI para implementar designs pixel-perfect.",
-                  technologies: ["HTML", "CSS", "JavaScript", "React", "Sass"]
+                  period: "JUN 2021 — NOV 2021",
+                  role: "Front End Developer",
+                  company: "Raxar SRL",
+                  description: "Desarrollo de la página web para el Congreso 2021 de la Sociedad Argentina de Cardiología. Implementación completa del formulario de inscripción con validaciones intuitivas y integración de pasarela de cobro con Mercado Pago. Enfoque en experiencia de usuario fluida y prevención de errores.",
+                  technologies: ["JavaScript", "HTML", "CSS", "Mercado Pago API", "Validaciones", "UX/UI"]
                 }
               ].map((job, index) => (
                 <li key={index} className="mb-12">
@@ -268,12 +315,12 @@ export default function Home() {
             <ul className="group/list">
               {[
                 {
-                  title: "E-commerce Platform",
-                  description: "Plataforma completa de comercio electrónico con carrito de compras, procesamiento de pagos y panel de administración. Incluye análisis en tiempo real y gestión de inventario.",
-                  technologies: ["Next.js", "TypeScript", "Stripe", "PostgreSQL", "Tailwind CSS"],
+                  title: "Frontend Mentor Todo App",
+                  description: "Aplicación completa de gestión de tareas con drag & drop, modo oscuro/claro, filtros dinámicos y persistencia en LocalStorage. Diseño responsivo implementado con Tailwind CSS siguiendo el desafío de Frontend Mentor. Funcionalidades CRUD completas y sistema de arrastrar y soltar para reordenar tareas.",
+                  technologies: ["React", "Vite", "JavaScript", "Tailwind CSS", "Hello Pangea DnD", "LocalStorage"],
                   links: [
-                    { type: "demo", url: "#" },
-                    { type: "github", url: "#" }
+                    { type: "demo", url: "https://frontendmentor-vite-todoapp.vercel.app" },
+                    { type: "github", url: "https://github.com/martuwilson/frontendmentor-vite-todoapp" }
                   ]
                 },
                 {
@@ -302,7 +349,7 @@ export default function Home() {
                       <h3>
                         <a
                           className="inline-flex items-baseline font-semibold leading-tight text-slate-200 hover:text-teal-300 focus-visible:text-teal-300 group/link text-base"
-                          href="#"
+                          href={index === 0 ? "https://github.com/martuwilson/frontendmentor-vite-todoapp" : "#"}
                           target="_blank"
                           rel="noreferrer noopener"
                           aria-label={`${project.title} (opens in a new tab)`}
@@ -364,16 +411,7 @@ export default function Home() {
 
         <footer className="max-w-md pb-16 text-sm text-slate-500 sm:pb-0">
           <p>
-            Inspirado en el diseño de{" "}
-            <a
-              href="https://brittanychiang.com"
-              className="font-medium text-slate-400 hover:text-teal-300 focus-visible:text-teal-300"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              Brittany Chiang
-            </a>
-            . Construido con{" "}
+            Construido con{" "}
             <a
               href="https://nextjs.org/"
               className="font-medium text-slate-400 hover:text-teal-300 focus-visible:text-teal-300"
@@ -401,6 +439,9 @@ export default function Home() {
               Vercel
             </a>
             .
+          </p>
+          <p className="mt-2 text-slate-600">
+            © 2025 Martin Ezequiel Williner. Todos los derechos reservados.
           </p>
         </footer>
       </main>
