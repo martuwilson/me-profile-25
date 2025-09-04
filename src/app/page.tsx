@@ -343,6 +343,13 @@ export default function Home() {
                     { type: "demo", url: "#" },
                     { type: "github", url: "#" }
                   ]
+                },
+                {
+                  title: "CRAFT - Confidential Project - IBM",
+                  description: "Proyecto confidencial desarrollado en IBM. Implementé mejoras de performance, seguridad y componentes reutilizables en una plataforma empresarial. Detalles bajo NDA.",
+                  technologies: ["Node.js", "React", "NestJS", "PostgreSQL", "Docker"],
+                  confidential: true,
+                  links: []
                 }
               ].map((project, index) => (
                 <li key={index} className="mb-12">
