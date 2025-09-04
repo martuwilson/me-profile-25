@@ -43,7 +43,7 @@ export default function Home() {
   };
 
   return (
-    <div className="lg:flex lg:justify-between lg:gap-4 min-h-screen bg-slate-900 text-slate-300 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-900 text-slate-300 relative overflow-hidden">
       {/* Cursor spotlight effect - only on desktop */}
       <div 
         className="pointer-events-none fixed inset-0 z-30 transition duration-300 hidden lg:block"
@@ -51,8 +51,11 @@ export default function Home() {
           background: `radial-gradient(600px at ${cursorPosition.x}px ${cursorPosition.y}px, rgba(29, 78, 216, 0.08), transparent 80%)`
         }}
       ></div>
+      
+      <div className="mx-auto max-w-7xl px-8 py-12 font-sans md:px-16 md:py-20 lg:px-32 lg:py-0">
+        <div className="lg:flex lg:justify-between lg:gap-8 lg:min-h-screen">
       {/* Left Sidebar - Fixed */}
-      <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-1/2 lg:flex-col lg:justify-between lg:py-24 px-6 lg:px-12 relative z-40">
+      <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-2/5 lg:flex-col lg:justify-between lg:py-24 relative z-40">
         <div>
           <h1 className="text-4xl font-bold tracking-tight text-slate-200 sm:text-5xl">
             <Link href="/">Martin Ezequiel Williner</Link>
@@ -149,7 +152,7 @@ export default function Home() {
       </header>
 
       {/* Right Content - Scrollable */}
-      <main className="pt-24 lg:w-1/2 lg:py-24 px-6 lg:px-12 relative z-40">
+      <main className="pt-24 lg:w-3/5 lg:py-24 relative z-40">
         {/* About Section */}
         <section id="about" className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24">
           <div className="sticky top-0 z-20 -mx-6 mb-4 w-screen bg-slate-900/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0">
@@ -190,7 +193,7 @@ export default function Home() {
             <p className="mb-6 leading-relaxed text-slate-400">
               Tecnologías y herramientas que domino y utilizo regularmente en mis proyectos profesionales:
             </p>
-            <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
               {[
                 { category: "Frontend", techs: ["JavaScript", "TypeScript", "React.js", "Vite"] },
                 { category: "Backend", techs: ["Node.js", "Express.js", "NestJS"] },
@@ -445,6 +448,8 @@ export default function Home() {
           </p>
         </footer>
       </main>
+        </div>
+      </div>
     </div>
   );
 }
