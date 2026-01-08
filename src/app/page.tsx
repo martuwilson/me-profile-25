@@ -61,7 +61,7 @@ export default function Home() {
             <Link href="/">Martin Ezequiel Williner</Link>
           </h1>
           <h2 className="mt-3 text-lg font-medium tracking-tight text-slate-200 sm:text-xl">
-            Full Stack Developer
+            Data Intelligence Engineer | Full Stack Developer
           </h2>
           <p className="mt-4 max-w-xs leading-normal text-slate-400">
             Data Intelligence Engineer & Full Stack Developer apasionado por convertir datos complejos en soluciones escalables y automatizadas.
@@ -192,11 +192,12 @@ export default function Home() {
             <p className="mb-6 leading-relaxed text-slate-400">
               Tecnologías y herramientas que domino y utilizo regularmente en mis proyectos profesionales:
             </p>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-6">
               {[
                 { category: "Frontend", techs: ["JavaScript", "TypeScript", "React.js", "Vite"] },
                 { category: "Backend", techs: ["Node.js", "Express.js", "NestJS"] },
-                { category: "Database", techs: ["PostgreSQL", "MongoDB"] },
+                { category: "Data & Analytics", techs: ["Python", "SQL", "ETL", "Pandas", "NumPy", "SPSS"] },
+                { category: "Database", techs: ["PostgreSQL", "MongoDB", "EPM/Cognos"] },
                 { category: "DevOps & Tools", techs: ["Docker", "Git", "GitHub", "CI/CD"] },
                 { category: "Testing & Security", techs: ["Swagger", "OWASP ZAP"] }
               ].map((group, groupIndex) => (
@@ -217,8 +218,7 @@ export default function Home() {
             </div>
             <div className="mt-8 p-4 bg-slate-800/30 rounded-lg border border-slate-700/50">
               <p className="text-sm text-slate-400 leading-relaxed">
-                <span className="font-medium text-teal-300">Especialización:</span> Desarrollo Full Stack con JavaScript/TypeScript, 
-                arquitecturas modernas, mejores prácticas de seguridad, y optimización de performance.
+                <span className="font-medium text-teal-300">Especialización:</span> Data Intelligence Engineering con Python/SQL para pipelines ETL y analytics, y Desarrollo Full Stack con JavaScript/TypeScript para arquitecturas modernas, seguridad y optimización de performance.
               </p>
             </div>
           </div>
