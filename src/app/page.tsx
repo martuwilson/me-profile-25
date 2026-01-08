@@ -64,7 +64,7 @@ export default function Home() {
             Full Stack Developer
           </h2>
           <p className="mt-4 max-w-xs leading-normal text-slate-400">
-            Desarrollador apasionado creando experiencias digitales excepcionales con tecnologías modernas.
+            Data Intelligence Engineer & Full Stack Developer apasionado por convertir datos complejos en soluciones escalables y automatizadas.
           </p>
           
           {/* Navigation */}
@@ -162,8 +162,7 @@ export default function Home() {
           </div>
           <div>
             <p className="mb-4 leading-relaxed">
-              Desde diciembre de 2021, trabajo como Full Stack Developer en IBM, donde he desarrollado y mantenido 
-              aplicaciones principales y microservicios escalables. A partir de 2025, también ofrezco servicios 
+              Desde diciembre de 2021, trabajo en IBM donde he desarrollado soluciones como Full Stack Developer y actualmente como Data Intelligence Engineer, convirtiendo datos financieros complejos en productos de datos automatizados. A partir de 2026, también ofrezco servicios 
               freelance, combinando mi experiencia corporativa con proyectos independientes.
             </p>
             <p className="mb-4 leading-relaxed">
@@ -236,14 +235,21 @@ export default function Home() {
             <ol className="group/list">
               {[
                 {
-                  period: "2025 — PRESENTE",
+                  period: "2026 — PRESENTE",
                   role: "Full Stack Developer Freelance",
                   company: "Independiente",
                   description: "Desarrollo de soluciones web completas para clientes diversos. Creación de aplicaciones escalables con arquitecturas modernas, desde la conceptualización hasta el deployment. Especialización en stack JavaScript/TypeScript con enfoque en performance y mejores prácticas de desarrollo.",
                   technologies: ["TypeScript", "React.js", "Next.js", "Node.js", "NestJS", "PostgreSQL", "Docker", "CI/CD"]
                 },
                 {
-                  period: "DIC 2021 — PRESENTE",
+                  period: "OCT 2025 — PRESENTE",
+                  role: "Data Intelligence Engineer",
+                  company: "IBM",
+                  description: "Conversión de datos financieros complejos en productos de datos confiables, automatizados y listos para análisis. Desarrollo de pipelines automatizados en Python que redujeron 30% los tiempos de procesamiento de reportes globales. Implementación de modelos de datos en SQL para análisis financiero, forecast y reconciliaciones. Construcción de dashboards ejecutivos (EPM/Cognos) para métricas clave de negocio. Aplicación de principios de Data Quality y Data Governance en datasets corporativos críticos.",
+                  technologies: ["Python", "SQL", "ETL", "EPM/Cognos", "Pandas", "NumPy", "SPSS", "Data Analytics", "Data Quality", "Data Governance"]
+                },
+                {
+                  period: "DIC 2021 — SEP 2025",
                   role: "Full Stack Developer",
                   company: "IBM",
                   description: "Desarrollo y mantenimiento de aplicaciones principales y microservicios con Node.js, Express y React. Optimización de rendimiento logrando 35% de mejora en tiempos de carga. Implementación de validaciones automáticas y middlewares de seguridad, reduciendo errores manuales en 60% y vulnerabilidades críticas de 40 a 8. Diseño de librería con 20+ componentes React reutilizables. Migración a arquitecturas modernas con Vite y NestJS.",
@@ -459,7 +465,7 @@ export default function Home() {
             .
           </p>
           <p className="mt-2 text-slate-600">
-            © 2025 Martin Ezequiel Williner. Todos los derechos reservados.
+            © 2026 Martin Ezequiel Williner. Todos los derechos reservados.
           </p>
         </footer>
       </main>
