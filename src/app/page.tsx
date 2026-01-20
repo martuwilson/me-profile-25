@@ -3,11 +3,13 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { translations, type Language } from '@/lib/translations';
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState('about');
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [language, setLanguage] = useState<Language>('es');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -17,12 +19,18 @@ export default function Home() {
   const [formStatus, setFormStatus] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const t = translations[language];
+
   useEffect(() => {
-    // Load theme preference from localStorage (only on client)
+    // Load preferences from localStorage (only on client)
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('theme');
       if (savedTheme === 'light') {
         setIsDarkMode(false);
+      }
+      const savedLang = localStorage.getItem('language') as Language;
+      if (savedLang && (savedLang === 'es' || savedLang === 'en')) {
+        setLanguage(savedLang);
       }
     }
   }, []);
@@ -64,6 +72,14 @@ export default function Home() {
     }
   };
 
+  const toggleLanguage = () => {
+    const newLang: Language = language === 'es' ? 'en' : 'es';
+    setLanguage(newLang);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('language', newLang);
+    }
+  };
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
@@ -83,7 +99,7 @@ export default function Home() {
 
     // Validación básica
     if (!formData.name || !formData.email || !formData.message) {
-      setFormStatus('Por favor completa todos los campos requeridos.');
+      setFormStatus(t.formRequired);
       setIsSubmitting(false);
       return;
     }
@@ -95,10 +111,10 @@ export default function Home() {
       
       window.location.href = mailtoLink;
       
-      setFormStatus('¡Gracias! Tu mensaje ha sido enviado.');
+      setFormStatus(t.formSuccess);
       setFormData({ name: '', email: '', subject: '', message: '' });
     } catch (error) {
-      setFormStatus('Hubo un error. Por favor intenta nuevamente.');
+      setFormStatus(t.formError);
     } finally {
       setIsSubmitting(false);
     }
@@ -122,166 +138,180 @@ export default function Home() {
       
       <div className="mx-auto max-w-7xl px-8 py-12 font-sans md:px-16 md:py-20 lg:px-32 lg:py-0">
         <div className="lg:flex lg:justify-between lg:gap-8 lg:min-h-screen">
-      {/* Left Sidebar - Fixed */}
-      <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-2/5 lg:flex-col lg:justify-between lg:py-24 relative z-40">
-        <div>
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex-1">
-              <h1 className={`text-4xl font-bold tracking-tight sm:text-5xl transition-colors ${
+          {/* Left Sidebar - Fixed */}
+          <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-2/5 lg:flex-col lg:justify-between lg:py-24 relative z-40">
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex-1">
+                  <h1 className={`text-4xl font-bold tracking-tight sm:text-5xl transition-colors ${
+                    isDarkMode ? 'text-slate-200' : 'text-slate-900'
+                  }`}>
+                    <Link href="/">{t.name}</Link>
+                  </h1>
+                </div>
+                <div className="flex items-center gap-2">
+              {/* Language Toggle */}
+              <button
+                onClick={toggleLanguage}
+                className={`px-3 py-2 rounded-lg font-medium text-sm transition-all hover:scale-110 ${
+                  isDarkMode 
+                    ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' 
+                    : 'bg-slate-200 hover:bg-slate-300 text-slate-700'
+                }`}
+                aria-label="Toggle language"
+              >
+                {language === 'es' ? '🇬🇧 EN' : '🇪🇸 ES'}
+              </button>
+              {/* Theme Toggle */}
+              <button
+                onClick={toggleTheme}
+                className={`p-2 rounded-lg transition-all hover:scale-110 ${
+                  isDarkMode 
+                    ? 'bg-slate-800 hover:bg-slate-700 text-yellow-400' 
+                    : 'bg-slate-200 hover:bg-slate-300 text-slate-700'
+                }`}
+                aria-label="Toggle theme"
+              >
+                {isDarkMode ? (
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fillRule="evenodd" clipRule="evenodd"></path>
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 8.001 0 1010.586 10.586z"></path>
+                  </svg>
+                )}
+              </button>
+                </div>
+              </div>
+              <h2 className={`mt-3 text-lg font-medium tracking-tight sm:text-xl transition-colors ${
                 isDarkMode ? 'text-slate-200' : 'text-slate-900'
               }`}>
-                <Link href="/">Martin Ezequiel Williner</Link>
-              </h1>
+                {t.title}
+              </h2>
+              <p className={`mt-4 max-w-xs leading-normal transition-colors ${
+                isDarkMode ? 'text-slate-400' : 'text-slate-600'
+              }`}>
+                {t.subtitle}
+              </p>
+              
+              {/* Navigation */}
+              <nav className="nav hidden lg:block mt-16" aria-label="In-page jump links">
+                <ul className="mt-16 w-max">
+                  {[
+                    { id: 'about', label: t.nav.about },
+                    { id: 'technologies', label: t.nav.technologies },
+                    { id: 'experience', label: t.nav.experience },
+                    { id: 'projects', label: t.nav.projects },
+                    { id: 'contact', label: t.nav.contact }
+                  ].map((item) => (
+                    <li key={item.id}>
+                      <a
+                        className={`group flex items-center py-3 ${
+                          activeSection === item.id ? 'active' : ''
+                        }`}
+                        href={`#${item.id}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          scrollToSection(item.id);
+                        }}
+                      >
+                        <span className={`nav-indicator mr-4 h-px w-8 transition-all group-hover:w-16 group-focus-visible:w-16 motion-reduce:transition-none ${
+                          activeSection === item.id 
+                            ? `w-16 ${isDarkMode ? 'bg-slate-200' : 'bg-slate-900'}` 
+                            : isDarkMode ? 'bg-slate-600 group-hover:bg-slate-200' : 'bg-slate-400 group-hover:bg-slate-900'
+                        }`}></span>
+                        <span className={`nav-text text-xs font-bold uppercase tracking-widest transition-colors group-focus-visible:text-slate-200 ${
+                          activeSection === item.id 
+                            ? isDarkMode ? 'text-slate-200' : 'text-slate-900' 
+                            : isDarkMode ? 'text-slate-500 group-hover:text-slate-200' : 'text-slate-600 group-hover:text-slate-900'
+                        }`}>
+                          {item.label}
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
             </div>
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              className={`ml-4 p-2 rounded-lg transition-all hover:scale-110 ${
-                isDarkMode 
-                  ? 'bg-slate-800 hover:bg-slate-700 text-yellow-400' 
-                  : 'bg-slate-200 hover:bg-slate-300 text-slate-700'
-              }`}
-              aria-label="Toggle theme"
-            >
-              {isDarkMode ? (
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fillRule="evenodd" clipRule="evenodd"></path>
+
+            {/* Download CV Button */}
+            <div className="mt-12">
+              <a
+                href="/Martin_Williner_CV_DataFullStack.pdf"
+                download
+                className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all hover:scale-105 ${
+                  isDarkMode 
+                    ? 'bg-teal-400/10 text-teal-300 hover:bg-teal-400/20 border border-teal-400/20' 
+                    : 'bg-teal-600/10 text-teal-700 hover:bg-teal-600/20 border border-teal-600/20'
+                }`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-              ) : (
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-                </svg>
-              )}
-            </button>
-          </div>
-          <h2 className={`mt-3 text-lg font-medium tracking-tight sm:text-xl transition-colors ${
-            isDarkMode ? 'text-slate-200' : 'text-slate-900'
-          }`}>
-            Data Intelligence Engineer | Full Stack Developer
-          </h2>
-          <p className={`mt-4 max-w-xs leading-normal transition-colors ${
-            isDarkMode ? 'text-slate-400' : 'text-slate-600'
-          }`}>
-            Data Intelligence Engineer & Full Stack Developer apasionado por convertir datos complejos en soluciones escalables y automatizadas.
-          </p>
-          
-          {/* Navigation */}
-          <nav className="nav hidden lg:block mt-16" aria-label="In-page jump links">
-            <ul className="mt-16 w-max">
-              {[
-                { id: 'about', label: 'Sobre Mí' },
-                { id: 'technologies', label: 'Stack Tech' },
-                { id: 'experience', label: 'Experiencia' },
-                { id: 'projects', label: 'Proyectos' },
-                { id: 'contact', label: 'Contacto' }
-              ].map((item) => (
-                <li key={item.id}>
-                  <a
-                    className={`group flex items-center py-3 ${
-                      activeSection === item.id ? 'active' : ''
-                    }`}
-                    href={`#${item.id}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      scrollToSection(item.id);
-                    }}
-                  >
-                    <span className={`nav-indicator mr-4 h-px w-8 transition-all group-hover:w-16 group-focus-visible:w-16 motion-reduce:transition-none ${
-                      activeSection === item.id 
-                        ? `w-16 ${isDarkMode ? 'bg-slate-200' : 'bg-slate-900'}` 
-                        : isDarkMode ? 'bg-slate-600 group-hover:bg-slate-200' : 'bg-slate-400 group-hover:bg-slate-900'
-                    }`}></span>
-                    <span className={`nav-text text-xs font-bold uppercase tracking-widest transition-colors group-focus-visible:text-slate-200 ${
-                      activeSection === item.id 
-                        ? isDarkMode ? 'text-slate-200' : 'text-slate-900' 
-                        : isDarkMode ? 'text-slate-500 group-hover:text-slate-200' : 'text-slate-600 group-hover:text-slate-900'
-                    }`}>
-                      {item.label}
-                    </span>
-                  </a>
-                </li>
-              ))}
+                {t.downloadCV}
+              </a>
+            </div>
+
+            {/* Social Links */}
+            <ul className="ml-1 mt-8 flex items-center" aria-label="Social media">
+              <li className="mr-5 text-xs shrink-0">
+                <a
+                  className={`block transition-colors ${
+                    isDarkMode ? 'hover:text-slate-200' : 'hover:text-slate-900'
+                  }`}
+                  href="https://github.com/martuwilson"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  aria-label="GitHub (opens in a new tab)"
+                >
+                  <span className="sr-only">GitHub</span>
+                  <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd"></path>
+                  </svg>
+                </a>
+              </li>
+              <li className="mr-5 text-xs shrink-0">
+                <a
+                  className={`block transition-colors ${
+                    isDarkMode ? 'hover:text-slate-200' : 'hover:text-slate-900'
+                  }`}
+                  href="https://www.linkedin.com/in/martinwilliner/"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  aria-label="LinkedIn (opens in a new tab)"
+                >
+                  <span className="sr-only">LinkedIn</span>
+                  <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                </a>
+              </li>
+              <li className="mr-5 text-xs shrink-0">
+                <a
+                  className={`block transition-colors ${
+                    isDarkMode ? 'hover:text-slate-200' : 'hover:text-slate-900'
+                  }`}
+                  href="mailto:williner.martin@gmail.com"
+                  aria-label="Email (opens in a new tab)"
+                >
+                  <span className="sr-only">Email</span>
+                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 7.89a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </a>
+              </li>
             </ul>
-          </nav>
-        </div>
 
-        {/* Download CV Button */}
-        <div className="mt-12">
-          <a
-            href="/Martin_Williner_CV_DataFullStack.pdf"
-            download
-            className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all hover:scale-105 ${
-              isDarkMode 
-                ? 'bg-teal-400/10 text-teal-300 hover:bg-teal-400/20 border border-teal-400/20' 
-                : 'bg-teal-600/10 text-teal-700 hover:bg-teal-600/20 border border-teal-600/20'
-            }`}
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Descargar CV
-          </a>
-        </div>
+            <div className={`mt-8 text-sm transition-colors ${
+              isDarkMode ? 'text-slate-500' : 'text-slate-600'
+            }`}>
+              📍 Buenos Aires, Argentina
+            </div>
+          </header>
 
-        {/* Social Links */}
-        <ul className="ml-1 mt-8 flex items-center" aria-label="Social media">
-          <li className="mr-5 text-xs shrink-0">
-            <a
-              className={`block transition-colors ${
-                isDarkMode ? 'hover:text-slate-200' : 'hover:text-slate-900'
-              }`}
-              href="https://github.com/martuwilson"
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label="GitHub (opens in a new tab)"
-            >
-              <span className="sr-only">GitHub</span>
-              <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd"></path>
-              </svg>
-            </a>
-          </li>
-          <li className="mr-5 text-xs shrink-0">
-            <a
-              className={`block transition-colors ${
-                isDarkMode ? 'hover:text-slate-200' : 'hover:text-slate-900'
-              }`}
-              href="https://www.linkedin.com/in/martinwilliner/"
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label="LinkedIn (opens in a new tab)"
-            >
-              <span className="sr-only">LinkedIn</span>
-              <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-              </svg>
-            </a>
-          </li>
-          <li className="mr-5 text-xs shrink-0">
-            <a
-              className={`block transition-colors ${
-                isDarkMode ? 'hover:text-slate-200' : 'hover:text-slate-900'
-              }`}
-              href="mailto:williner.martin@gmail.com"
-              aria-label="Email (opens in a new tab)"
-            >
-              <span className="sr-only">Email</span>
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 7.89a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-            </a>
-          </li>
-        </ul>
-
-        <div className={`mt-8 text-sm transition-colors ${
-          isDarkMode ? 'text-slate-500' : 'text-slate-600'
-        }`}>
-          📍 Buenos Aires, Argentina
-        </div>
-      </header>
-
-      {/* Right Content - Scrollable */}
-      <main className="pt-24 lg:w-3/5 lg:py-24 relative z-40">
+          {/* Right Content - Scrollable */}
+          <main className="pt-24 lg:w-3/5 lg:py-24 relative z-40">
         {/* About Section */}
         <section id="about" className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24">
           <div className={`sticky top-0 z-20 -mx-6 mb-4 w-screen px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0 transition-colors ${
@@ -290,35 +320,15 @@ export default function Home() {
             <h2 className={`text-sm font-bold uppercase tracking-widest lg:sr-only transition-colors ${
               isDarkMode ? 'text-slate-200' : 'text-slate-900'
             }`}>
-              Sobre Mí
+              {t.aboutTitle}
             </h2>
           </div>
           <div>
-            <p className="mb-4 leading-relaxed">
-              Desde diciembre de 2021, trabajo en IBM donde he desarrollado soluciones como Full Stack Developer y actualmente como Data Intelligence Engineer, convirtiendo datos financieros complejos en productos de datos automatizados. A partir de 2026, también ofrezco servicios 
-              freelance, combinando mi experiencia corporativa con proyectos independientes.
-            </p>
-            <p className="mb-4 leading-relaxed">
-              En IBM, he logrado optimizar tiempos de carga en un 35%, reducir errores manuales en un 60%, y disminuir 
-              vulnerabilidades críticas de 40 a 8. Me especializo en el ecosistema 
-              <span className={`font-medium transition-colors ${
-                isDarkMode ? 'text-slate-200' : 'text-slate-900'
-              }`}> JavaScript/TypeScript</span>, con 
-              <span className={`font-medium transition-colors ${
-                isDarkMode ? 'text-slate-200' : 'text-slate-900'
-              }`}> React</span>, 
-              <span className={`font-medium transition-colors ${
-                isDarkMode ? 'text-slate-200' : 'text-slate-900'
-              }`}> Node.js</span>, y 
-              <span className={`font-medium transition-colors ${
-                isDarkMode ? 'text-slate-200' : 'text-slate-900'
-              }`}> NestJS</span>.
-            </p>
-            <p className="leading-relaxed">
-              Mi enfoque está en crear arquitecturas modernas, implementar mejores prácticas de seguridad con herramientas 
-              como OWASP ZAP, y desarrollar soluciones escalables que optimicen tanto la experiencia del usuario como 
-              la eficiencia del código.
-            </p>
+            {t.aboutContent.map((paragraph, index) => (
+              <p key={index} className="mb-4 leading-relaxed last:mb-0">
+                {paragraph}
+              </p>
+            ))}
           </div>
         </section>
 
@@ -330,7 +340,7 @@ export default function Home() {
             <h2 className={`text-sm font-bold uppercase tracking-widest lg:sr-only transition-colors ${
               isDarkMode ? 'text-slate-200' : 'text-slate-900'
             }`}>
-              Stack Tecnológico
+              {t.techTitle}
             </h2>
           </div>
           <div>
@@ -379,7 +389,7 @@ export default function Home() {
               }`}>
                 <span className={`font-medium transition-colors ${
                   isDarkMode ? 'text-teal-300' : 'text-teal-600'
-                }`}>Especialización:</span> Data Intelligence Engineering con Python/SQL para pipelines ETL y analytics, y Desarrollo Full Stack con JavaScript/TypeScript para arquitecturas modernas, seguridad y optimización de performance.
+                }`}>{t.techSpecialization}</span> {t.techSubtitle}
               </p>
             </div>
           </div>
@@ -393,41 +403,12 @@ export default function Home() {
             <h2 className={`text-sm font-bold uppercase tracking-widest lg:sr-only transition-colors ${
               isDarkMode ? 'text-slate-200' : 'text-slate-900'
             }`}>
-              Experiencia
+              {t.expTitle}
             </h2>
           </div>
           <div>
             <ol className="group/list">
-              {[
-                {
-                  period: "2026 — PRESENTE",
-                  role: "Full Stack Developer Freelance",
-                  company: "Independiente",
-                  description: "Desarrollo de soluciones web completas para clientes diversos. Creación de aplicaciones escalables con arquitecturas modernas, desde la conceptualización hasta el deployment. Especialización en stack JavaScript/TypeScript con enfoque en performance y mejores prácticas de desarrollo.",
-                  technologies: ["TypeScript", "React.js", "Next.js", "Node.js", "NestJS", "PostgreSQL", "Docker", "CI/CD"]
-                },
-                {
-                  period: "OCT 2025 — PRESENTE",
-                  role: "Data Intelligence Engineer",
-                  company: "IBM",
-                  description: "Conversión de datos financieros complejos en productos de datos confiables, automatizados y listos para análisis. Desarrollo de pipelines automatizados en Python que redujeron 30% los tiempos de procesamiento de reportes globales. Implementación de modelos de datos en SQL para análisis financiero, forecast y reconciliaciones. Construcción de dashboards ejecutivos (EPM/Cognos) para métricas clave de negocio. Aplicación de principios de Data Quality y Data Governance en datasets corporativos críticos.",
-                  technologies: ["Python", "SQL", "ETL", "EPM/Cognos", "Pandas", "NumPy", "SPSS", "Data Analytics", "Data Quality", "Data Governance"]
-                },
-                {
-                  period: "DIC 2021 — SEP 2025",
-                  role: "Full Stack Developer",
-                  company: "IBM",
-                  description: "Desarrollo y mantenimiento de aplicaciones principales y microservicios con Node.js, Express y React. Optimización de rendimiento logrando 35% de mejora en tiempos de carga. Implementación de validaciones automáticas y middlewares de seguridad, reduciendo errores manuales en 60% y vulnerabilidades críticas de 40 a 8. Diseño de librería con 20+ componentes React reutilizables. Migración a arquitecturas modernas con Vite y NestJS.",
-                  technologies: ["Node.js", "Express", "React", "NestJS", "Vite", "IBM Watson", "OWASP ZAP", "SonarQube", "REST APIs", "CI/CD"]
-                },
-                {
-                  period: "JUN 2021 — NOV 2021",
-                  role: "Front End Developer",
-                  company: "Raxar SRL",
-                  description: "Desarrollo de la página web para el Congreso 2021 de la Sociedad Argentina de Cardiología. Implementación completa del formulario de inscripción con validaciones intuitivas y integración de pasarela de cobro con Mercado Pago. Enfoque en experiencia de usuario fluida y prevención de errores.",
-                  technologies: ["JavaScript", "HTML", "CSS", "Mercado Pago API", "Validaciones", "UX/UI"]
-                }
-              ].map((job, index) => (
+              {t.experience.map((job, index) => (
                 <li key={index} className="mb-12">
                   <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50 spotlight-hover">
                     <div className={`absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block ${
@@ -481,7 +462,7 @@ export default function Home() {
                   <span className={`border-b border-transparent pb-px transition motion-reduce:transition-none ${
                     isDarkMode ? 'group-hover:border-teal-300' : 'group-hover:border-teal-600'
                   }`}>
-                    Ver CV Completo
+                    {t.viewFullResume}
                   </span>
                   <span className="whitespace-nowrap">
                     <svg className="ml-1 inline-block h-4 w-4 shrink-0 transition-transform group-hover:translate-x-2 group-focus-visible:translate-x-2 motion-reduce:transition-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -502,49 +483,12 @@ export default function Home() {
             <h2 className={`text-sm font-bold uppercase tracking-widest lg:sr-only transition-colors ${
               isDarkMode ? 'text-slate-200' : 'text-slate-900'
             }`}>
-              Proyectos
+              {t.projectsTitle}
             </h2>
           </div>
           <div>
             <ul className="group/list">
-              {[
-                {
-                  title: "CRAFT - IBM",
-                  description: "Proyecto confidencial desarrollado en IBM. Colaboré en la creación desde cero (frontend y backend) de un sistema de gestión de datos global e implementé mejoras de performance, seguridad y componentes reutilizables para la creación de procesos empresariales en la plataforma.",
-                  technologies: ["Node.js", "React", "NestJS", "PostgreSQL", "Docker"],
-                  confidential: true,
-                  links: [],
-                  image: null
-                },
-                {
-                  title: "Advanced Web Scraper - Python + Playwright",
-                  description: "Demostración completa end-to-end de un sistema avanzado de web scraping y automatización diseñado para interactuar con sitios web complejos impulsados por JavaScript. A diferencia de los scrapers tradicionales, este sistema se comporta como un usuario real: navega a través de múltiples pasos, activa componentes dinámicos de la interfaz, extrae datos renderizados después de la interacción y presenta todo dentro de una interfaz de dashboard limpia y profesional.",
-                  technologies: ["Python", "Playwright", "JavaScript", "Automation", "Web Scraping", "Dashboard"],
-                  links: [
-                    { type: "demo", url: "https://www.upwork.com/freelancers/~01fef04c5c1ebee674?p=1998112525832941568" }
-                  ],
-                  image: '/scrapper.jpg'
-                },
-                {
-                  title: "Procesamiento Automatizado de Facturas PDF y Generador de Reportes Excel",
-                  description: "Desarrollé una aplicación de escritorio que automatiza el procesamiento de facturas PDF. La herramienta extrae datos clave de múltiples PDFs, los consolida en un reporte Excel, carga archivos a Dropbox y proporciona un registro detallado de actividades. El objetivo fue reducir el trabajo manual, prevenir errores y optimizar el manejo de facturas a través de una interfaz simple y funcional.",
-                  technologies: ["Python", "PDF Processing", "Excel", "Dropbox API", "Desktop App", "Automation"],
-                  links: [
-                    { type: "demo", url: "https://www.upwork.com/freelancers/~01fef04c5c1ebee674?p=1997830629344256000" }
-                  ],
-                  image: null
-                },
-                {
-                  title: "Frontend Mentor Todo App",
-                  description: "Aplicación completa de gestión de tareas con drag & drop, modo oscuro/claro, filtros dinámicos y persistencia en LocalStorage. Diseño responsivo implementado con Tailwind CSS siguiendo el desafío de Frontend Mentor. Funcionalidades CRUD completas y sistema de arrastrar y soltar para reordenar tareas.",
-                  technologies: ["React", "Vite", "JavaScript", "Tailwind CSS", "Hello Pangea DnD", "LocalStorage"],
-                  links: [
-                    { type: "demo", url: "https://frontendmentor-vite-todoapp.vercel.app" },
-                    { type: "github", url: "https://github.com/martuwilson/frontendmentor-vite-todoapp" }
-                  ],
-                  image: null
-                },
-              ].map((project, index) => (
+              {t.projects.map((project, index) => (
                 <li key={index} className="mb-12">
                   <div className="group relative grid gap-4 pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50 spotlight-hover">
                     <div className={`absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block ${
@@ -587,7 +531,7 @@ export default function Home() {
                                 <span className={`ml-2 text-xs font-normal transition-colors ${
                                   isDarkMode ? 'text-slate-400' : 'text-slate-600'
                                 }`}>
-                                  (Confidencial)
+                                  {t.confidential}
                                 </span>
                               )}
                             </span>
@@ -654,7 +598,7 @@ export default function Home() {
             <h2 className={`text-sm font-bold uppercase tracking-widest lg:sr-only transition-colors ${
               isDarkMode ? 'text-slate-200' : 'text-slate-900'
             }`}>
-              Contacto
+              {t.contactTitle}
             </h2>
           </div>
 
@@ -662,13 +606,13 @@ export default function Home() {
             <h2 className={`text-sm font-bold uppercase tracking-widest mb-8 transition-colors ${
               isDarkMode ? 'text-slate-200' : 'text-slate-900'
             }`}>
-              ¿Trabajamos juntos?
+              {t.contactHeading}
             </h2>
             
             <p className={`mb-8 transition-colors ${
               isDarkMode ? 'text-slate-400' : 'text-slate-600'
             }`}>
-              Estoy disponible para proyectos freelance a partir de 2026. Si tienes un proyecto en mente o simplemente quieres charlar, no dudes en contactarme.
+              {t.contactSubtitle}
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -676,7 +620,7 @@ export default function Home() {
                 <label htmlFor="name" className={`block text-sm font-medium mb-2 transition-colors ${
                   isDarkMode ? 'text-slate-300' : 'text-slate-700'
                 }`}>
-                  Nombre *
+                  {t.formName}
                 </label>
                 <input
                   type="text"
@@ -690,7 +634,7 @@ export default function Home() {
                       ? 'bg-slate-800 border-slate-700 text-slate-200 focus:ring-teal-500 focus:border-teal-500' 
                       : 'bg-white border-slate-300 text-slate-900 focus:ring-teal-600 focus:border-teal-600'
                   }`}
-                  placeholder="Tu nombre"
+                  placeholder={t.formNamePlaceholder}
                 />
               </div>
 
@@ -698,7 +642,7 @@ export default function Home() {
                 <label htmlFor="email" className={`block text-sm font-medium mb-2 transition-colors ${
                   isDarkMode ? 'text-slate-300' : 'text-slate-700'
                 }`}>
-                  Email *
+                  {t.formEmail}
                 </label>
                 <input
                   type="email"
@@ -712,7 +656,7 @@ export default function Home() {
                       ? 'bg-slate-800 border-slate-700 text-slate-200 focus:ring-teal-500 focus:border-teal-500' 
                       : 'bg-white border-slate-300 text-slate-900 focus:ring-teal-600 focus:border-teal-600'
                   }`}
-                  placeholder="tu@email.com"
+                  placeholder={t.formEmailPlaceholder}
                 />
               </div>
 
@@ -720,7 +664,7 @@ export default function Home() {
                 <label htmlFor="subject" className={`block text-sm font-medium mb-2 transition-colors ${
                   isDarkMode ? 'text-slate-300' : 'text-slate-700'
                 }`}>
-                  Asunto
+                  {t.formSubject}
                 </label>
                 <input
                   type="text"
@@ -733,7 +677,7 @@ export default function Home() {
                       ? 'bg-slate-800 border-slate-700 text-slate-200 focus:ring-teal-500 focus:border-teal-500' 
                       : 'bg-white border-slate-300 text-slate-900 focus:ring-teal-600 focus:border-teal-600'
                   }`}
-                  placeholder="¿De qué se trata?"
+                  placeholder={t.formSubjectPlaceholder}
                 />
               </div>
 
@@ -741,7 +685,7 @@ export default function Home() {
                 <label htmlFor="message" className={`block text-sm font-medium mb-2 transition-colors ${
                   isDarkMode ? 'text-slate-300' : 'text-slate-700'
                 }`}>
-                  Mensaje *
+                  {t.formMessage}
                 </label>
                 <textarea
                   id="message"
@@ -755,7 +699,7 @@ export default function Home() {
                       ? 'bg-slate-800 border-slate-700 text-slate-200 focus:ring-teal-500 focus:border-teal-500' 
                       : 'bg-white border-slate-300 text-slate-900 focus:ring-teal-600 focus:border-teal-600'
                   }`}
-                  placeholder="Cuéntame sobre tu proyecto..."
+                  placeholder={t.formMessagePlaceholder}
                 />
               </div>
 
@@ -778,7 +722,7 @@ export default function Home() {
                     : 'bg-teal-600 text-white hover:bg-teal-700 border border-teal-600'
                 }`}
               >
-                {isSubmitting ? 'Enviando...' : 'Enviar Mensaje'}
+                {isSubmitting ? t.formSending : t.formSubmit}
               </button>
             </form>
           </div>
@@ -788,7 +732,7 @@ export default function Home() {
           isDarkMode ? 'text-slate-500' : 'text-slate-600'
         }`}>
           <p>
-            Construido con{" "}
+            {t.footerBuilt}{" "}
             <a
               href="https://nextjs.org/"
               className={`font-medium transition-colors ${
@@ -801,7 +745,7 @@ export default function Home() {
             >
               Next.js
             </a>{" "}
-            y{" "}
+            {t.footerAnd}{" "}
             <a
               href="https://tailwindcss.com/"
               className={`font-medium transition-colors ${
@@ -814,7 +758,7 @@ export default function Home() {
             >
               Tailwind CSS
             </a>
-            , desplegado en{" "}
+            {t.footerDeployed}{" "}
             <a
               href="https://vercel.com/"
               className={`font-medium transition-colors ${
