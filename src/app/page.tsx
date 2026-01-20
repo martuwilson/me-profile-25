@@ -8,6 +8,14 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState('about');
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [formStatus, setFormStatus] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     // Load theme preference from localStorage (only on client)
@@ -59,6 +67,41 @@ export default function Home() {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setFormStatus('');
+
+    // Validación básica
+    if (!formData.name || !formData.email || !formData.message) {
+      setFormStatus('Por favor completa todos los campos requeridos.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Simular envío (aquí integrarías con tu servicio de email)
+    try {
+      // Crear mailto link como fallback
+      const mailtoLink = `mailto:williner.martin@gmail.com?subject=${encodeURIComponent(formData.subject || 'Contacto desde Portfolio')}&body=${encodeURIComponent(`Nombre: ${formData.name}\nEmail: ${formData.email}\n\nMensaje:\n${formData.message}`)}`;
+      
+      window.location.href = mailtoLink;
+      
+      setFormStatus('¡Gracias! Tu mensaje ha sido enviado.');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (error) {
+      setFormStatus('Hubo un error. Por favor intenta nuevamente.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -129,7 +172,8 @@ export default function Home() {
                 { id: 'about', label: 'Sobre Mí' },
                 { id: 'technologies', label: 'Stack Tech' },
                 { id: 'experience', label: 'Experiencia' },
-                { id: 'projects', label: 'Proyectos' }
+                { id: 'projects', label: 'Proyectos' },
+                { id: 'contact', label: 'Contacto' }
               ].map((item) => (
                 <li key={item.id}>
                   <a
@@ -599,6 +643,144 @@ export default function Home() {
                 </span>
               </a>
             </div>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section id="contact" className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24">
+          <div className={`sticky top-0 z-20 -mx-6 mb-4 w-screen px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0 transition-colors ${
+            isDarkMode ? 'bg-slate-900/75' : 'bg-slate-50/75'
+          }`}>
+            <h2 className={`text-sm font-bold uppercase tracking-widest lg:sr-only transition-colors ${
+              isDarkMode ? 'text-slate-200' : 'text-slate-900'
+            }`}>
+              Contacto
+            </h2>
+          </div>
+
+          <div>
+            <h2 className={`text-sm font-bold uppercase tracking-widest mb-8 transition-colors ${
+              isDarkMode ? 'text-slate-200' : 'text-slate-900'
+            }`}>
+              ¿Trabajamos juntos?
+            </h2>
+            
+            <p className={`mb-8 transition-colors ${
+              isDarkMode ? 'text-slate-400' : 'text-slate-600'
+            }`}>
+              Estoy disponible para proyectos freelance a partir de 2026. Si tienes un proyecto en mente o simplemente quieres charlar, no dudes en contactarme.
+            </p>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="name" className={`block text-sm font-medium mb-2 transition-colors ${
+                  isDarkMode ? 'text-slate-300' : 'text-slate-700'
+                }`}>
+                  Nombre *
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                  className={`w-full px-4 py-3 rounded-lg border transition-all focus:outline-none focus:ring-2 ${
+                    isDarkMode 
+                      ? 'bg-slate-800 border-slate-700 text-slate-200 focus:ring-teal-500 focus:border-teal-500' 
+                      : 'bg-white border-slate-300 text-slate-900 focus:ring-teal-600 focus:border-teal-600'
+                  }`}
+                  placeholder="Tu nombre"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="email" className={`block text-sm font-medium mb-2 transition-colors ${
+                  isDarkMode ? 'text-slate-300' : 'text-slate-700'
+                }`}>
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                  className={`w-full px-4 py-3 rounded-lg border transition-all focus:outline-none focus:ring-2 ${
+                    isDarkMode 
+                      ? 'bg-slate-800 border-slate-700 text-slate-200 focus:ring-teal-500 focus:border-teal-500' 
+                      : 'bg-white border-slate-300 text-slate-900 focus:ring-teal-600 focus:border-teal-600'
+                  }`}
+                  placeholder="tu@email.com"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="subject" className={`block text-sm font-medium mb-2 transition-colors ${
+                  isDarkMode ? 'text-slate-300' : 'text-slate-700'
+                }`}>
+                  Asunto
+                </label>
+                <input
+                  type="text"
+                  id="subject"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 rounded-lg border transition-all focus:outline-none focus:ring-2 ${
+                    isDarkMode 
+                      ? 'bg-slate-800 border-slate-700 text-slate-200 focus:ring-teal-500 focus:border-teal-500' 
+                      : 'bg-white border-slate-300 text-slate-900 focus:ring-teal-600 focus:border-teal-600'
+                  }`}
+                  placeholder="¿De qué se trata?"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="message" className={`block text-sm font-medium mb-2 transition-colors ${
+                  isDarkMode ? 'text-slate-300' : 'text-slate-700'
+                }`}>
+                  Mensaje *
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  required
+                  rows={5}
+                  className={`w-full px-4 py-3 rounded-lg border transition-all focus:outline-none focus:ring-2 resize-none ${
+                    isDarkMode 
+                      ? 'bg-slate-800 border-slate-700 text-slate-200 focus:ring-teal-500 focus:border-teal-500' 
+                      : 'bg-white border-slate-300 text-slate-900 focus:ring-teal-600 focus:border-teal-600'
+                  }`}
+                  placeholder="Cuéntame sobre tu proyecto..."
+                />
+              </div>
+
+              {formStatus && (
+                <div className={`p-4 rounded-lg ${
+                  formStatus.includes('error') || formStatus.includes('completa')
+                    ? isDarkMode ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-red-50 text-red-700 border border-red-200'
+                    : isDarkMode ? 'bg-teal-500/10 text-teal-400 border border-teal-500/20' : 'bg-teal-50 text-teal-700 border border-teal-200'
+                }`}>
+                  {formStatus}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`w-full px-6 py-3 rounded-lg font-medium transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 ${
+                  isDarkMode 
+                    ? 'bg-teal-400/10 text-teal-300 hover:bg-teal-400/20 border border-teal-400/20' 
+                    : 'bg-teal-600 text-white hover:bg-teal-700 border border-teal-600'
+                }`}
+              >
+                {isSubmitting ? 'Enviando...' : 'Enviar Mensaje'}
+              </button>
+            </form>
           </div>
         </section>
 
