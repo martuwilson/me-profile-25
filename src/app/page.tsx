@@ -107,7 +107,7 @@ export default function Home() {
           <li className="mr-5 text-xs shrink-0">
             <a
               className="block hover:text-slate-200"
-              href="https://github.com/martin-williner"
+              href="https://github.com/martuwilson"
               target="_blank"
               rel="noreferrer noopener"
               aria-label="GitHub (opens in a new tab)"
@@ -121,7 +121,7 @@ export default function Home() {
           <li className="mr-5 text-xs shrink-0">
             <a
               className="block hover:text-slate-200"
-              href="https://linkedin.com/in/martin-williner"
+              href="https://www.linkedin.com/in/martinwilliner/"
               target="_blank"
               rel="noreferrer noopener"
               aria-label="LinkedIn (opens in a new tab)"
@@ -135,7 +135,7 @@ export default function Home() {
           <li className="mr-5 text-xs shrink-0">
             <a
               className="block hover:text-slate-200"
-              href="mailto:martin@example.com"
+              href="mailto:williner.martin@gmail.com"
               aria-label="Email (opens in a new tab)"
             >
               <span className="sr-only">Email</span>
@@ -324,33 +324,41 @@ export default function Home() {
             <ul className="group/list">
               {[
                 {
+                  title: "CRAFT - IBM",
+                  description: "Proyecto confidencial desarrollado en IBM. Colaboré en la creación desde cero (frontend y backend) de un sistema de gestión de datos global e implementé mejoras de performance, seguridad y componentes reutilizables para la creación de procesos empresariales en la plataforma.",
+                  technologies: ["Node.js", "React", "NestJS", "PostgreSQL", "Docker"],
+                  confidential: true,
+                  links: [],
+                  image: null
+                },
+                {
+                  title: "Advanced Web Scraper - Python + Playwright",
+                  description: "Demostración completa end-to-end de un sistema avanzado de web scraping y automatización diseñado para interactuar con sitios web complejos impulsados por JavaScript. A diferencia de los scrapers tradicionales, este sistema se comporta como un usuario real: navega a través de múltiples pasos, activa componentes dinámicos de la interfaz, extrae datos renderizados después de la interacción y presenta todo dentro de una interfaz de dashboard limpia y profesional.",
+                  technologies: ["Python", "Playwright", "JavaScript", "Automation", "Web Scraping", "Dashboard"],
+                  links: [
+                    { type: "demo", url: "https://www.upwork.com/freelancers/~01fef04c5c1ebee674?p=1998112525832941568" }
+                  ],
+                  image: '/scrapper.jpg'
+                },
+                {
+                  title: "Procesamiento Automatizado de Facturas PDF y Generador de Reportes Excel",
+                  description: "Desarrollé una aplicación de escritorio que automatiza el procesamiento de facturas PDF. La herramienta extrae datos clave de múltiples PDFs, los consolida en un reporte Excel, carga archivos a Dropbox y proporciona un registro detallado de actividades. El objetivo fue reducir el trabajo manual, prevenir errores y optimizar el manejo de facturas a través de una interfaz simple y funcional.",
+                  technologies: ["Python", "PDF Processing", "Excel", "Dropbox API", "Desktop App", "Automation"],
+                  links: [
+                    { type: "demo", url: "https://www.upwork.com/freelancers/~01fef04c5c1ebee674?p=1997830629344256000" }
+                  ],
+                  image: null
+                },
+                {
                   title: "Frontend Mentor Todo App",
                   description: "Aplicación completa de gestión de tareas con drag & drop, modo oscuro/claro, filtros dinámicos y persistencia en LocalStorage. Diseño responsivo implementado con Tailwind CSS siguiendo el desafío de Frontend Mentor. Funcionalidades CRUD completas y sistema de arrastrar y soltar para reordenar tareas.",
                   technologies: ["React", "Vite", "JavaScript", "Tailwind CSS", "Hello Pangea DnD", "LocalStorage"],
                   links: [
                     { type: "demo", url: "https://frontendmentor-vite-todoapp.vercel.app" },
                     { type: "github", url: "https://github.com/martuwilson/frontendmentor-vite-todoapp" }
-                  ]
+                  ],
+                  image: null
                 },
-                {
-                  title: "Task Management App",
-                  description: "Aplicación de gestión de tareas colaborativa con funcionalidades en tiempo real, drag & drop, y notificaciones push. Interfaz intuitiva y responsiva.",
-                  technologies: ["React", "Socket.io", "Node.js", "MongoDB", "Material-UI"],
-                  links: []
-                },
-                {
-                  title: "Weather Dashboard",
-                  description: "Dashboard meteorológico con visualización de datos en tiempo real, pronósticos extendidos y mapas interactivos. Integración con múltiples APIs meteorológicas.",
-                  technologies: ["Vue.js", "Chart.js", "OpenWeather API", "Sass", "PWA"],
-                  links: []
-                },
-                {
-                  title: "CRAFT - IBM",
-                  description: "Proyecto confidencial desarrollado en IBM. Colaboré en la creación desde cero (frontend y backend) de un sistema de gestión de datos global e implementé mejoras de performance, seguridad y componentes reutilizables para la creación de procesos empresariales en la plataforma.",
-                  technologies: ["Node.js", "React", "NestJS", "PostgreSQL", "Docker"],
-                  confidential: true,
-                  links: []
-                }
               ].map((project, index) => (
                 <li key={index} className="mb-12">
                   <div className="group relative grid gap-4 pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50 spotlight-hover">
@@ -406,7 +414,7 @@ export default function Home() {
                       width={200}
                       height={120}
                       className="rounded border-2 border-slate-200/10 transition group-hover:border-slate-200/30 sm:order-1 sm:col-span-2 sm:translate-y-1"
-                      src={project.confidential ? '/ibm-logo.jpg' : `https://placehold.co/200x120/1e293b/64748b.jpg?text=Project+${index + 1}`}
+                      src={project.image || (project.confidential ? '/ibm-logo.jpg' : `https://placehold.co/200x120/1e293b/64748b.jpg?text=Project+${index + 1}`)}
                     />
                   </div>
                 </li>
