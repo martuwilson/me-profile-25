@@ -7,6 +7,17 @@ import Image from 'next/image';
 export default function Home() {
   const [activeSection, setActiveSection] = useState('about');
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  useEffect(() => {
+    // Load theme preference from localStorage (only on client)
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'light') {
+        setIsDarkMode(false);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,18 +48,32 @@ export default function Home() {
     };
   }, []);
 
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+    }
+  };
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-300 relative overflow-hidden">
+    <div className={`min-h-screen relative overflow-hidden transition-colors duration-300 ${
+      isDarkMode 
+        ? 'bg-slate-900 text-slate-300' 
+        : 'bg-slate-50 text-slate-700'
+    }`}>
       {/* Cursor spotlight effect - only on desktop */}
       <div 
         className="pointer-events-none fixed inset-0 z-30 transition duration-300 hidden lg:block"
         style={{
-          background: `radial-gradient(600px at ${cursorPosition.x}px ${cursorPosition.y}px, rgba(29, 78, 216, 0.08), transparent 80%)`
+          background: isDarkMode 
+            ? `radial-gradient(600px at ${cursorPosition.x}px ${cursorPosition.y}px, rgba(29, 78, 216, 0.08), transparent 80%)`
+            : `radial-gradient(600px at ${cursorPosition.x}px ${cursorPosition.y}px, rgba(59, 130, 246, 0.06), transparent 80%)`
         }}
       ></div>
       
@@ -57,13 +82,43 @@ export default function Home() {
       {/* Left Sidebar - Fixed */}
       <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-2/5 lg:flex-col lg:justify-between lg:py-24 relative z-40">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight text-slate-200 sm:text-5xl">
-            <Link href="/">Martin Ezequiel Williner</Link>
-          </h1>
-          <h2 className="mt-3 text-lg font-medium tracking-tight text-slate-200 sm:text-xl">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex-1">
+              <h1 className={`text-4xl font-bold tracking-tight sm:text-5xl transition-colors ${
+                isDarkMode ? 'text-slate-200' : 'text-slate-900'
+              }`}>
+                <Link href="/">Martin Ezequiel Williner</Link>
+              </h1>
+            </div>
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className={`ml-4 p-2 rounded-lg transition-all hover:scale-110 ${
+                isDarkMode 
+                  ? 'bg-slate-800 hover:bg-slate-700 text-yellow-400' 
+                  : 'bg-slate-200 hover:bg-slate-300 text-slate-700'
+              }`}
+              aria-label="Toggle theme"
+            >
+              {isDarkMode ? (
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fillRule="evenodd" clipRule="evenodd"></path>
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                </svg>
+              )}
+            </button>
+          </div>
+          <h2 className={`mt-3 text-lg font-medium tracking-tight sm:text-xl transition-colors ${
+            isDarkMode ? 'text-slate-200' : 'text-slate-900'
+          }`}>
             Data Intelligence Engineer | Full Stack Developer
           </h2>
-          <p className="mt-4 max-w-xs leading-normal text-slate-400">
+          <p className={`mt-4 max-w-xs leading-normal transition-colors ${
+            isDarkMode ? 'text-slate-400' : 'text-slate-600'
+          }`}>
             Data Intelligence Engineer & Full Stack Developer apasionado por convertir datos complejos en soluciones escalables y automatizadas.
           </p>
           
@@ -87,11 +142,15 @@ export default function Home() {
                       scrollToSection(item.id);
                     }}
                   >
-                    <span className={`nav-indicator mr-4 h-px w-8 bg-slate-600 transition-all group-hover:w-16 group-hover:bg-slate-200 group-focus-visible:w-16 group-focus-visible:bg-slate-200 motion-reduce:transition-none ${
-                      activeSection === item.id ? 'w-16 bg-slate-200' : ''
+                    <span className={`nav-indicator mr-4 h-px w-8 transition-all group-hover:w-16 group-focus-visible:w-16 motion-reduce:transition-none ${
+                      activeSection === item.id 
+                        ? `w-16 ${isDarkMode ? 'bg-slate-200' : 'bg-slate-900'}` 
+                        : isDarkMode ? 'bg-slate-600 group-hover:bg-slate-200' : 'bg-slate-400 group-hover:bg-slate-900'
                     }`}></span>
-                    <span className={`nav-text text-xs font-bold uppercase tracking-widest text-slate-500 group-hover:text-slate-200 group-focus-visible:text-slate-200 ${
-                      activeSection === item.id ? 'text-slate-200' : ''
+                    <span className={`nav-text text-xs font-bold uppercase tracking-widest transition-colors group-focus-visible:text-slate-200 ${
+                      activeSection === item.id 
+                        ? isDarkMode ? 'text-slate-200' : 'text-slate-900' 
+                        : isDarkMode ? 'text-slate-500 group-hover:text-slate-200' : 'text-slate-600 group-hover:text-slate-900'
                     }`}>
                       {item.label}
                     </span>
@@ -106,7 +165,9 @@ export default function Home() {
         <ul className="ml-1 mt-8 flex items-center" aria-label="Social media">
           <li className="mr-5 text-xs shrink-0">
             <a
-              className="block hover:text-slate-200"
+              className={`block transition-colors ${
+                isDarkMode ? 'hover:text-slate-200' : 'hover:text-slate-900'
+              }`}
               href="https://github.com/martuwilson"
               target="_blank"
               rel="noreferrer noopener"
@@ -120,7 +181,9 @@ export default function Home() {
           </li>
           <li className="mr-5 text-xs shrink-0">
             <a
-              className="block hover:text-slate-200"
+              className={`block transition-colors ${
+                isDarkMode ? 'hover:text-slate-200' : 'hover:text-slate-900'
+              }`}
               href="https://www.linkedin.com/in/martinwilliner/"
               target="_blank"
               rel="noreferrer noopener"
@@ -134,7 +197,9 @@ export default function Home() {
           </li>
           <li className="mr-5 text-xs shrink-0">
             <a
-              className="block hover:text-slate-200"
+              className={`block transition-colors ${
+                isDarkMode ? 'hover:text-slate-200' : 'hover:text-slate-900'
+              }`}
               href="mailto:williner.martin@gmail.com"
               aria-label="Email (opens in a new tab)"
             >
@@ -146,7 +211,9 @@ export default function Home() {
           </li>
         </ul>
 
-        <div className="mt-8 text-sm text-slate-500">
+        <div className={`mt-8 text-sm transition-colors ${
+          isDarkMode ? 'text-slate-500' : 'text-slate-600'
+        }`}>
           📍 Buenos Aires, Argentina
         </div>
       </header>
@@ -155,8 +222,12 @@ export default function Home() {
       <main className="pt-24 lg:w-3/5 lg:py-24 relative z-40">
         {/* About Section */}
         <section id="about" className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24">
-          <div className="sticky top-0 z-20 -mx-6 mb-4 w-screen bg-slate-900/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0">
-            <h2 className="text-sm font-bold uppercase tracking-widest text-slate-200 lg:sr-only">
+          <div className={`sticky top-0 z-20 -mx-6 mb-4 w-screen px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0 transition-colors ${
+            isDarkMode ? 'bg-slate-900/75' : 'bg-slate-50/75'
+          }`}>
+            <h2 className={`text-sm font-bold uppercase tracking-widest lg:sr-only transition-colors ${
+              isDarkMode ? 'text-slate-200' : 'text-slate-900'
+            }`}>
               Sobre Mí
             </h2>
           </div>
@@ -168,10 +239,18 @@ export default function Home() {
             <p className="mb-4 leading-relaxed">
               En IBM, he logrado optimizar tiempos de carga en un 35%, reducir errores manuales en un 60%, y disminuir 
               vulnerabilidades críticas de 40 a 8. Me especializo en el ecosistema 
-              <span className="font-medium text-slate-200"> JavaScript/TypeScript</span>, con 
-              <span className="font-medium text-slate-200"> React</span>, 
-              <span className="font-medium text-slate-200"> Node.js</span>, y 
-              <span className="font-medium text-slate-200"> NestJS</span>.
+              <span className={`font-medium transition-colors ${
+                isDarkMode ? 'text-slate-200' : 'text-slate-900'
+              }`}> JavaScript/TypeScript</span>, con 
+              <span className={`font-medium transition-colors ${
+                isDarkMode ? 'text-slate-200' : 'text-slate-900'
+              }`}> React</span>, 
+              <span className={`font-medium transition-colors ${
+                isDarkMode ? 'text-slate-200' : 'text-slate-900'
+              }`}> Node.js</span>, y 
+              <span className={`font-medium transition-colors ${
+                isDarkMode ? 'text-slate-200' : 'text-slate-900'
+              }`}> NestJS</span>.
             </p>
             <p className="leading-relaxed">
               Mi enfoque está en crear arquitecturas modernas, implementar mejores prácticas de seguridad con herramientas 
@@ -183,13 +262,19 @@ export default function Home() {
 
         {/* Tech Stack Section */}
         <section id="technologies" className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24">
-          <div className="sticky top-0 z-20 -mx-6 mb-4 w-screen bg-slate-900/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0">
-            <h2 className="text-sm font-bold uppercase tracking-widest text-slate-200 lg:sr-only">
+          <div className={`sticky top-0 z-20 -mx-6 mb-4 w-screen px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0 transition-colors ${
+            isDarkMode ? 'bg-slate-900/75' : 'bg-slate-50/75'
+          }`}>
+            <h2 className={`text-sm font-bold uppercase tracking-widest lg:sr-only transition-colors ${
+              isDarkMode ? 'text-slate-200' : 'text-slate-900'
+            }`}>
               Stack Tecnológico
             </h2>
           </div>
           <div>
-            <p className="mb-6 leading-relaxed text-slate-400">
+            <p className={`mb-6 leading-relaxed transition-colors ${
+              isDarkMode ? 'text-slate-400' : 'text-slate-600'
+            }`}>
               Tecnologías y herramientas que domino y utilizo regularmente en mis proyectos profesionales:
             </p>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-6">
@@ -202,13 +287,19 @@ export default function Home() {
                 { category: "Testing & Security", techs: ["Swagger", "OWASP ZAP"] }
               ].map((group, groupIndex) => (
                 <div key={groupIndex} className="spotlight-hover">
-                  <h3 className="mb-3 font-medium text-slate-200 text-sm uppercase tracking-wide">
+                  <h3 className={`mb-3 font-medium text-sm uppercase tracking-wide transition-colors ${
+                    isDarkMode ? 'text-slate-200' : 'text-slate-900'
+                  }`}>
                     {group.category}
                   </h3>
                   <ul className="space-y-2">
                     {group.techs.map((tech, techIndex) => (
-                      <li key={techIndex} className="flex items-center text-sm text-slate-300">
-                        <span className="mr-2 h-1 w-1 bg-teal-400 rounded-full"></span>
+                      <li key={techIndex} className={`flex items-center text-sm transition-colors ${
+                        isDarkMode ? 'text-slate-300' : 'text-slate-700'
+                      }`}>
+                        <span className={`mr-2 h-1 w-1 rounded-full transition-colors ${
+                          isDarkMode ? 'bg-teal-400' : 'bg-teal-600'
+                        }`}></span>
                         {tech}
                       </li>
                     ))}
@@ -216,9 +307,17 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <div className="mt-8 p-4 bg-slate-800/30 rounded-lg border border-slate-700/50">
-              <p className="text-sm text-slate-400 leading-relaxed">
-                <span className="font-medium text-teal-300">Especialización:</span> Data Intelligence Engineering con Python/SQL para pipelines ETL y analytics, y Desarrollo Full Stack con JavaScript/TypeScript para arquitecturas modernas, seguridad y optimización de performance.
+            <div className={`mt-8 p-4 rounded-lg border transition-colors ${
+              isDarkMode 
+                ? 'bg-slate-800/30 border-slate-700/50' 
+                : 'bg-slate-100/50 border-slate-300/50'
+            }`}>
+              <p className={`text-sm leading-relaxed transition-colors ${
+                isDarkMode ? 'text-slate-400' : 'text-slate-600'
+              }`}>
+                <span className={`font-medium transition-colors ${
+                  isDarkMode ? 'text-teal-300' : 'text-teal-600'
+                }`}>Especialización:</span> Data Intelligence Engineering con Python/SQL para pipelines ETL y analytics, y Desarrollo Full Stack con JavaScript/TypeScript para arquitecturas modernas, seguridad y optimización de performance.
               </p>
             </div>
           </div>
@@ -226,8 +325,12 @@ export default function Home() {
 
         {/* Experience Section */}
         <section id="experience" className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24">
-          <div className="sticky top-0 z-20 -mx-6 mb-4 w-screen bg-slate-900/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0">
-            <h2 className="text-sm font-bold uppercase tracking-widest text-slate-200 lg:sr-only">
+          <div className={`sticky top-0 z-20 -mx-6 mb-4 w-screen px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0 transition-colors ${
+            isDarkMode ? 'bg-slate-900/75' : 'bg-slate-50/75'
+          }`}>
+            <h2 className={`text-sm font-bold uppercase tracking-widest lg:sr-only transition-colors ${
+              isDarkMode ? 'text-slate-200' : 'text-slate-900'
+            }`}>
               Experiencia
             </h2>
           </div>
@@ -265,12 +368,20 @@ export default function Home() {
               ].map((job, index) => (
                 <li key={index} className="mb-12">
                   <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50 spotlight-hover">
-                    <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-slate-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
-                    <header className="z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide text-slate-500 sm:col-span-2">
+                    <div className={`absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block ${
+                      isDarkMode 
+                        ? 'lg:group-hover:bg-slate-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)]' 
+                        : 'lg:group-hover:bg-slate-200/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.2)]'
+                    } lg:group-hover:drop-shadow-lg`}></div>
+                    <header className={`z-10 mb-2 mt-1 text-xs font-semibold uppercase tracking-wide sm:col-span-2 transition-colors ${
+                      isDarkMode ? 'text-slate-500' : 'text-slate-600'
+                    }`}>
                       {job.period}
                     </header>
                     <div className="z-10 sm:col-span-6">
-                      <h3 className="font-medium leading-snug text-slate-200">
+                      <h3 className={`font-medium leading-snug transition-colors ${
+                        isDarkMode ? 'text-slate-200' : 'text-slate-900'
+                      }`}>
                         <div>
                           <span className="absolute -inset-x-4 -inset-y-2.5 hidden rounded md:-inset-x-6 md:-inset-y-4 lg:block"></span>
                           <span>{job.role} · {job.company}</span>
@@ -280,7 +391,11 @@ export default function Home() {
                       <ul className="mt-2 flex flex-wrap" aria-label="Technologies used">
                         {job.technologies.map((tech, techIndex) => (
                           <li key={techIndex} className="mr-1.5 mt-2">
-                            <div className="flex items-center rounded-full bg-teal-400/10 px-3 py-1 text-xs font-medium leading-5 text-teal-300">
+                            <div className={`flex items-center rounded-full px-3 py-1 text-xs font-medium leading-5 transition-colors ${
+                              isDarkMode 
+                                ? 'bg-teal-400/10 text-teal-300' 
+                                : 'bg-teal-600/10 text-teal-700'
+                            }`}>
                               {tech}
                             </div>
                           </li>
@@ -293,13 +408,17 @@ export default function Home() {
             </ol>
             <div className="mt-12">
               <a
-                className="inline-flex items-center font-semibold leading-tight text-slate-200 group"
+                className={`inline-flex items-center font-semibold leading-tight group transition-colors ${
+                  isDarkMode ? 'text-slate-200' : 'text-slate-900'
+                }`}
                 aria-label="View Full Résumé"
                 href="/resume.pdf"
                 target="_blank"
               >
                 <span>
-                  <span className="border-b border-transparent pb-px transition group-hover:border-teal-300 motion-reduce:transition-none">
+                  <span className={`border-b border-transparent pb-px transition motion-reduce:transition-none ${
+                    isDarkMode ? 'group-hover:border-teal-300' : 'group-hover:border-teal-600'
+                  }`}>
                     Ver CV Completo
                   </span>
                   <span className="whitespace-nowrap">
@@ -315,8 +434,12 @@ export default function Home() {
 
         {/* Projects Section */}
         <section id="projects" className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24">
-          <div className="sticky top-0 z-20 -mx-6 mb-4 w-screen bg-slate-900/75 px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0">
-            <h2 className="text-sm font-bold uppercase tracking-widest text-slate-200 lg:sr-only">
+          <div className={`sticky top-0 z-20 -mx-6 mb-4 w-screen px-6 py-5 backdrop-blur md:-mx-12 md:px-12 lg:sr-only lg:relative lg:top-auto lg:mx-auto lg:w-full lg:px-0 lg:py-0 lg:opacity-0 transition-colors ${
+            isDarkMode ? 'bg-slate-900/75' : 'bg-slate-50/75'
+          }`}>
+            <h2 className={`text-sm font-bold uppercase tracking-widest lg:sr-only transition-colors ${
+              isDarkMode ? 'text-slate-200' : 'text-slate-900'
+            }`}>
               Proyectos
             </h2>
           </div>
@@ -362,12 +485,20 @@ export default function Home() {
               ].map((project, index) => (
                 <li key={index} className="mb-12">
                   <div className="group relative grid gap-4 pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50 spotlight-hover">
-                    <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-slate-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)] lg:group-hover:drop-shadow-lg"></div>
+                    <div className={`absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block ${
+                      isDarkMode 
+                        ? 'lg:group-hover:bg-slate-800/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.1)]' 
+                        : 'lg:group-hover:bg-slate-200/50 lg:group-hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.2)]'
+                    } lg:group-hover:drop-shadow-lg`}></div>
                     <div className="z-10 sm:order-2 sm:col-span-6">
                       <h3>
                         {project.links && project.links.length > 0 && project.links.some(link => link.url !== "#") ? (
                           <a
-                            className="inline-flex items-baseline font-semibold leading-tight text-slate-200 hover:text-teal-300 focus-visible:text-teal-300 group/link text-base"
+                            className={`inline-flex items-baseline font-semibold leading-tight group/link text-base transition-colors ${
+                              isDarkMode 
+                                ? 'text-slate-200 hover:text-teal-300 focus-visible:text-teal-300' 
+                                : 'text-slate-900 hover:text-teal-600 focus-visible:text-teal-600'
+                            }`}
                             href={project.links.find(link => link.type === 'github' && link.url !== "#")?.url || project.links.find(link => link.url !== "#")?.url}
                             target="_blank"
                             rel="noreferrer noopener"
@@ -384,12 +515,16 @@ export default function Home() {
                             </span>
                           </a>
                         ) : (
-                          <div className="inline-flex items-baseline font-semibold leading-tight text-slate-200 text-base">
+                          <div className={`inline-flex items-baseline font-semibold leading-tight text-base transition-colors ${
+                            isDarkMode ? 'text-slate-200' : 'text-slate-900'
+                          }`}>
                             <span className="absolute -inset-x-4 -inset-y-2.5 hidden rounded md:-inset-x-6 md:-inset-y-4 lg:block"></span>
                             <span>
                               {project.title}
                               {project.confidential && (
-                                <span className="ml-2 text-xs text-slate-400 font-normal">
+                                <span className={`ml-2 text-xs font-normal transition-colors ${
+                                  isDarkMode ? 'text-slate-400' : 'text-slate-600'
+                                }`}>
                                   (Confidencial)
                                 </span>
                               )}
@@ -401,7 +536,11 @@ export default function Home() {
                       <ul className="mt-2 flex flex-wrap" aria-label="Technologies used">
                         {project.technologies.map((tech, techIndex) => (
                           <li key={techIndex} className="mr-1.5 mt-2">
-                            <div className="flex items-center rounded-full bg-teal-400/10 px-3 py-1 text-xs font-medium leading-5 text-teal-300">
+                            <div className={`flex items-center rounded-full px-3 py-1 text-xs font-medium leading-5 transition-colors ${
+                              isDarkMode 
+                                ? 'bg-teal-400/10 text-teal-300' 
+                                : 'bg-teal-600/10 text-teal-700'
+                            }`}>
                               {tech}
                             </div>
                           </li>
@@ -422,12 +561,16 @@ export default function Home() {
             </ul>
             <div className="mt-12">
               <a
-                className="inline-flex items-center font-semibold leading-tight text-slate-200 group"
+                className={`inline-flex items-center font-semibold leading-tight group transition-colors ${
+                  isDarkMode ? 'text-slate-200' : 'text-slate-900'
+                }`}
                 aria-label="View Full Project Archive"
                 href="/projects"
               >
                 <span>
-                  <span className="border-b border-transparent pb-px transition group-hover:border-teal-300 motion-reduce:transition-none">
+                  <span className={`border-b border-transparent pb-px transition motion-reduce:transition-none ${
+                    isDarkMode ? 'group-hover:border-teal-300' : 'group-hover:border-teal-600'
+                  }`}>
                     Ver Archivo Completo de Proyectos
                   </span>
                   <span className="whitespace-nowrap">
@@ -441,12 +584,18 @@ export default function Home() {
           </div>
         </section>
 
-        <footer className="max-w-md pb-16 text-sm text-slate-500 sm:pb-0">
+        <footer className={`max-w-md pb-16 text-sm sm:pb-0 transition-colors ${
+          isDarkMode ? 'text-slate-500' : 'text-slate-600'
+        }`}>
           <p>
             Construido con{" "}
             <a
               href="https://nextjs.org/"
-              className="font-medium text-slate-400 hover:text-teal-300 focus-visible:text-teal-300"
+              className={`font-medium transition-colors ${
+                isDarkMode 
+                  ? 'text-slate-400 hover:text-teal-300 focus-visible:text-teal-300' 
+                  : 'text-slate-700 hover:text-teal-600 focus-visible:text-teal-600'
+              }`}
               target="_blank"
               rel="noreferrer noopener"
             >
@@ -455,7 +604,11 @@ export default function Home() {
             y{" "}
             <a
               href="https://tailwindcss.com/"
-              className="font-medium text-slate-400 hover:text-teal-300 focus-visible:text-teal-300"
+              className={`font-medium transition-colors ${
+                isDarkMode 
+                  ? 'text-slate-400 hover:text-teal-300 focus-visible:text-teal-300' 
+                  : 'text-slate-700 hover:text-teal-600 focus-visible:text-teal-600'
+              }`}
               target="_blank"
               rel="noreferrer noopener"
             >
@@ -464,7 +617,11 @@ export default function Home() {
             , desplegado en{" "}
             <a
               href="https://vercel.com/"
-              className="font-medium text-slate-400 hover:text-teal-300 focus-visible:text-teal-300"
+              className={`font-medium transition-colors ${
+                isDarkMode 
+                  ? 'text-slate-400 hover:text-teal-300 focus-visible:text-teal-300' 
+                  : 'text-slate-700 hover:text-teal-600 focus-visible:text-teal-600'
+              }`}
               target="_blank"
               rel="noreferrer noopener"
             >
@@ -472,7 +629,9 @@ export default function Home() {
             </a>
             .
           </p>
-          <p className="mt-2 text-slate-600">
+          <p className={`mt-2 transition-colors ${
+            isDarkMode ? 'text-slate-600' : 'text-slate-500'
+          }`}>
             © 2026 Martin Ezequiel Williner. Todos los derechos reservados.
           </p>
         </footer>
